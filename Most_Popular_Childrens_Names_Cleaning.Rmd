@@ -1,0 +1,112 @@
+---
+title: "MostPopularChidrensNamesCleaning"
+author: "Kay Ayala"
+date: "12/12/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Library 
+
+
+```{r library, echo=TRUE}
+library(dplyr)
+```
+
+## Import Data from txt
+
+```{r import, echo=TRUE}
+names_2015 = read.table("~/Desktop/Doing_Data_Science/Homework_5/yob2015.txt", sep=",")
+colnames(names_2015) = c("Name","Sex","amount_of_children") #renames columns in 2015 data
+names_2016 = read.table("~/Desktop/Doing_Data_Science/Homework_5/yob2016.txt", sep=";")
+colnames(names_2016) = c("Name","Sex","amount_of_children") #renames columns in 2016 data
+```
+
+## Prints Data Structure and Summary
+
+``` {r prints_data_summary, echo = TRUE}
+print(head(names_2016)) 
+print(str(names_2016)) 
+print(summary(names_2016))
+
+```
+
+
+## Removes Duplicates, Errors, and Displays last ten rows
+
+```{r removes_duplicates, echo=TRUE}
+names_2016 = names_2016[!duplicated(names_2016$Name),] # removes duplicates
+names_2015 = names_2015[!duplicated(names_2015$Name),]
+
+print(grep("yyy$", names_2016$Name))
+y2016 = names_2016[-212,] # removes line with "fionayyy"
+y2015 = names_2015 #renames dataset
+
+print(y2015[(nrow(y2015)-10):nrow(y2015),]) # Displays last 10 rows in 2015 Data 
+```
+
+These ten rows are interesting because they are all fairly uncommon boy names that start with 'Z'. They also look like they are from languages other than English. 
+
+## Merges Data Frames, Renames Columns
+```{r merge_and_rename, echo=TRUE}
+final = merge(y2015, y2016, by="Name", all=TRUE)
+
+colnames(final) = c("Name", "Sex_2015", "amount_of_children_2015", 
+                    "Sex_2016", "amount_of_children_2016")
+```
+
+##Removes Missing Values, Creates New Column 
+
+New column containts total number of children per name in both years. 
+
+```{r removes_missing_values, echo=TRUE}
+final = final[!is.na(final$amount_of_children_2015),]
+final = final[!is.na(final$amount_of_children_2016),]
+
+#print(str(final))
+final$amount_of_children_2015 = as.numeric(final$amount_of_children_2015)
+final$amount_of_children_2016= as.numeric(final$amount_of_children_2016)
+
+final$Total_number_of_children = final$amount_of_children_2015 + final$amount_of_children_2016
+```
+
+## Prints Dimensions
+
+```{r prints_dimensions, echo=TRUE}
+print(dim(final))
+```
+
+## Sorts Data Frame and Prints Top Ten Names
+
+```{r sorts_and_prints, echo=TRUE}
+final = final[order(final$Total_number_of_children, decreasing = TRUE),]
+
+final = final[!final$Sex_2015=="M",]
+
+cat("Top Ten Names\n")
+print(head(as.character(final$Name),10))
+```
+
+## Removes Extranious Data Frame Values
+
+Retains only top ten names and the total number of children who have them. 
+
+```{r removes_extranious_data, echo=TRUE}
+new_final = data.frame(final$Name, final$Total_number_of_children)
+final=new_final
+colnames(final) = c("Name", "Total_number_of_children")
+```
+
+## Writes Data Frame to CSV
+
+```{r writes_data, echo=TRUE}
+
+write.csv(file = "~/Desktop/Doing_Data_Science/Homework_5/MostPopularGirlsNames2015and2016.csv", x = final)
+
+```
+
+# Github Link 
+Note: This file can be found at https://github.com/KayMSDS/PopularChildrenNames.git along with the data used in and produced by this assignment.  
