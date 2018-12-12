@@ -1,2 +1,20 @@
 
-Things!
+This repository is contains homework for my Master's in Data Science program. 
+The purpose of this homework was to begin cleaning data. 
+
+yob2015.txt contains three comma delimited columns respectively containing children's names, sex, and 
+the number of children with that name. 
+
+
+yob2016.txt contains three semicolon delimited columns respectively containing children's names, sex, and 
+the number of children with that name. 
+
+The text files above have not been cleaned. 
+
+Most_Popular_Childrens_Names_Cleaning.Rmd is an RMarkdown file which outputs Most_Popular_Childrens_Names_Cleaning.Rmd.html 
+and MostPopularGirlsNames2015and2016.csv. 
+The html file best describes the content all the other files in this repo. 
+The MostPopularGirlsNames2015and2016.csv contains the top ten girls names in 2015 and 2016 
+and how many children had them both years. 
+
+
